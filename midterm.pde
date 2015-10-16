@@ -7,6 +7,8 @@ boolean keyW = false;
 int CELL_SIZE = 50;
 // an Array to hold all of our tiles
 PImage[] tiles = new PImage[2];
+
+StageGenerator sg = new StageGenerator(16);
 int[][] level = {
                   { 00, 01, 01, 01, 01, 01, 01, 01, 01, 01 },
                   { 01, 00, 01, 01, 01, 01, 01, 01, 01, 01 },
@@ -35,6 +37,7 @@ void setup() {
   size(500, 500);
   loadTiles();
   squid = new Player(0, 400);
+  level = sg.generate();
 }
 
 void draw() {

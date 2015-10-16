@@ -76,7 +76,7 @@ class Player
       // only jump if we are on solid ground (not falling, not jumping)
       if (jumpPower == 0)
       {
-        jumpPower = 5;
+        jumpPower = 10;
       }
       
       canLand = false;
