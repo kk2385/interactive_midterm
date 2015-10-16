@@ -12,6 +12,7 @@ class Player
   // jump power
   float jumpPower = 0;
 
+  boolean canLand = true; //if (!canLand) the character will keep falling even if it hits solids.
   Player(float _x, float _y)
   {
     // store position
@@ -77,6 +78,8 @@ class Player
       {
         jumpPower = 5;
       }
+      
+      canLand = false;
     }
 
 
@@ -90,8 +93,15 @@ class Player
     // debugging ellipse
     ellipse(x+CELL_SIZE/2, y+CELL_SIZE+3, 10, 10);
 
+    println("jumppower: " + jumpPower);
 
-    if (isSolid( downTileCode))
+    
+    //once you are falling and you have past through SOME air (non-solids), you can land.
+    if (jumpPower < 0 && !isSolid(downTileCode)) {
+      canLand = true;
+    }
+    
+    if (isSolid( downTileCode) && canLand)
     {
       jumpPower = 0;
       fill(255);
