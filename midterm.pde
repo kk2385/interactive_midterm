@@ -9,42 +9,26 @@ int CELL_SIZE = 50;
 PImage[] tiles = new PImage[2];
 
 StageGenerator sg = new StageGenerator(16);
-int[][] level = {
-                  { 00, 01, 01, 01, 01, 01, 01, 01, 01, 01 },
-                  { 01, 00, 01, 01, 01, 01, 01, 01, 01, 01 },
-                  { 01, 01, 00, 01, 01, 01, 01, 01, 01, 01 },
-                  { 01, 01, 01, 00, 01, 01, 01, 01, 01, 01 },
-                  { 01, 01, 01, 01, 00, 01, 01, 01, 01, 01 },
-                  { 01, 01, 01, 01, 01, 00, 01, 01, 01, 01 },
-                  { 01, 01, 01, 01, 01, 01, 00, 01, 01, 01 },
-                  { 01, 01, 01, 01, 01, 01, 01, 00, 01, 01 },
-                  { 01, 01, 01, 01, 01, 01, 01, 01, 00, 01 },
-                  { 01, 01, 01, 01, 01, 01, 01, 01, 01, 00 },
-                  { 01, 01, 01, 01, 01, 01, 01, 01, 00, 01 },
-                  { 01, 01, 01, 01, 01, 01, 01, 00, 01, 01 },
-                  { 01, 01, 01, 01, 01, 01, 00, 01, 01, 01 },
-                  { 01, 01, 01, 01, 01, 00, 01, 01, 01, 01 },
-                  { 01, 01, 01, 01, 00, 01, 01, 01, 01, 01 },
-                  { 01, 01, 01, 00, 01, 01, 01, 01, 01, 01 },
-                  { 01, 01, 00, 01, 01, 01, 01, 01, 01, 01 },
-                };
+int[][] level;
 
-float offset = -300;//-CELL_SIZE*level.length;
+float offset;
 
 float cameraPace = 0.2;
+
 Player squid;
 void setup() {
   size(500, 500);
   loadTiles();
-  squid = new Player(0, 400);
+  squid = new Player(0, 300);
   level = sg.generate();
+  offset = (-CELL_SIZE*level.length) + CELL_SIZE*10;
 }
 
 void draw() {
   drawLevel();
   if (offset <= 0) offset+=cameraPace;
   
-  println(offset + " " + level.length);
+//  println(offset + " " + level.length);
   squid.move();
   squid.display();
 }
@@ -76,7 +60,7 @@ int getTileCode(float x, float y, float offset)
   // convert x & y coordinate to an array coordinate
   int col = int(x)/CELL_SIZE;
   int row = int(y + abs(offset))/CELL_SIZE;
-  System.out.printf("level:[%d][%d]\n", row, col);
+  //System.out.printf("y: %f level:[%d][%d]\n", y, row, col);
   // off board test
   if (x >= width || x <= 0 || y >= height || y <= 0)
   {

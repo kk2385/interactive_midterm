@@ -34,39 +34,17 @@ class Player
       // debugging ellipse (to show the point that we are checking)
       ellipse(x + CELL_SIZE + 3, y+CELL_SIZE/2, 10, 10);
 
-      // is this a solid tile?  if so, don't allow us to move!
-      if ( !isSolid(tileCode) )
-      {
-        x += speed;
-        fill(255);
-        text("Tile to the right of mario is NOT SOLID.", 20, 60);
-      } else
-      {
-        fill(255);
-        text("Tile to the right of mario is SOLID.", 20, 60);
-      }
+      x += speed;
+      fill(255);
     }
 
     // left
     if (keyA) 
     { 
-      // we need to check to see what tile is to our left (by 3 pixels or so)
-      int tileCode = getTileCode(x - 3, y + CELL_SIZE/2, offset);
-
       // debugging ellipse
       ellipse(x-3, y+CELL_SIZE/2, 10, 10);
-
-      // is this a solid tile?  if so, don't allow us to move!
-      if ( !isSolid(tileCode) )
-      {
-        x -= speed;
-        fill(255);
-        text("Tile to the left of mario is NOT SOLID.", 20, 40);
-      } else
-      {
-        fill(255);
-        text("Tile to the left of mario is SOLID.", 20, 40);
-      }
+      x -= speed;
+      fill(255);
     }
 
 
@@ -76,7 +54,7 @@ class Player
       // only jump if we are on solid ground (not falling, not jumping)
       if (jumpPower == 0)
       {
-        jumpPower = 10;
+        jumpPower = 7;
       }
       
       canLand = false;
@@ -88,20 +66,16 @@ class Player
     if (offset <= 0) y += cameraPace; //move mario with camera.
 
     // always pull down the character (gravity) if we aren't on solid land
-    print("down:");
+//    print("down:");
     int downTileCode = getTileCode(x + CELL_SIZE/2, y + CELL_SIZE+3, offset);
+    int currTileCode = getTileCode(x + CELL_SIZE/2, y + CELL_SIZE-5, offset);
     // debugging ellipse
     ellipse(x+CELL_SIZE/2, y+CELL_SIZE+3, 10, 10);
+    fill(255,200,5);
+    ellipse(x+CELL_SIZE/2, y+CELL_SIZE-5, 10, 10);
+//    println("jumppower: " + jumpPower);
 
-    println("jumppower: " + jumpPower);
-
-    
-    //once you are falling and you have past through SOME air (non-solids), you can land.
-    if (jumpPower < 0 && !isSolid(downTileCode)) {
-      canLand = true;
-    }
-    
-    if (isSolid( downTileCode) && canLand)
+    if (isSolid(downTileCode) && !isSolid(currTileCode) && canLand)
     {
       jumpPower = 0;
       fill(255);
@@ -109,6 +83,7 @@ class Player
     } else
     {
       jumpPower -= 0.2;
+      if (jumpPower <= 0) canLand = true;
       fill(255);
       text("Tile below mario is NOT SOLID. jumpPower=" + jumpPower, 20, 20);
     }
