@@ -23,15 +23,6 @@ class StageGenerator {
     for (int i = 0; i < stage[stage.length-1].length; i++) {
       stage[stage.length-1][i] = 0;
     }
-    
-    for (int i = 0; i < stage.length; i++) {
-      for (int j = 0; j < stage[i].length; j++) {
-        System.out.print(stage[i][j] + " ");
-      }
-      System.out.println();
-    }
     return stage;
   }
-  
-
 }

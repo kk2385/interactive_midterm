@@ -11,8 +11,10 @@ class Player
 
   // jump power
   float jumpPower = 0;
+  
+  //charge jump
+  float charge = 0;
 
-  boolean canLand = true; //if (!canLand) the character will keep falling even if it hits solids.
   Player(float _x, float _y)
   {
     // store position
@@ -35,6 +37,7 @@ class Player
       ellipse(x + CELL_SIZE + 3, y+CELL_SIZE/2, 10, 10);
 
       x += speed;
+      if (x >= width) x = 0;
       fill(255);
     }
 
@@ -44,22 +47,29 @@ class Player
       // debugging ellipse
       ellipse(x-3, y+CELL_SIZE/2, 10, 10);
       x -= speed;
+      if (x <= 0) x = width;
       fill(255);
     }
 
 
     // jump
     if (keyW) { 
-
       // only jump if we are on solid ground (not falling, not jumping)
       if (jumpPower == 0)
       {
         jumpPower = 7;
       }
-      
-      canLand = false;
+    }
+    
+    // jump
+    if (keyS && jumpPower == 0) { 
+      charge += 0.2;
     }
 
+    if (!keyS && jumpPower == 0) {
+      jumpPower = charge;
+      charge = 0.;
+    }
 
     // apply jump power (if we are actively jumping this will push us up into the sky)
     y -= jumpPower;
@@ -75,6 +85,7 @@ class Player
     ellipse(x+CELL_SIZE/2, y+CELL_SIZE-5, 10, 10);
 //    println("jumppower: " + jumpPower);
 
+    boolean canLand = jumpPower <= 0;
     if (isSolid(downTileCode) && !isSolid(currTileCode) && canLand)
     {
       jumpPower = 0;
@@ -83,7 +94,6 @@ class Player
     } else
     {
       jumpPower -= 0.2;
-      if (jumpPower <= 0) canLand = true;
       fill(255);
       text("Tile below mario is NOT SOLID. jumpPower=" + jumpPower, 20, 20);
     }

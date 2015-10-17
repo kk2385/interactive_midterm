@@ -64,8 +64,8 @@ int getTileCode(float x, float y, float offset)
   // off board test
   if (x >= width || x <= 0 || y >= height || y <= 0)
   {
-    // off the board - return a solid tile
-    return 0;
+    // off the board - return air tile
+    return 1;
   }
 
   // otherwise return the tile value
