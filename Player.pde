@@ -14,6 +14,16 @@ class Player
   
   //charge jump
   float charge = 0;
+  
+  
+  //frame count for flutter (dont wanna flutter forever)
+  int remainingFlutterFrames = 0;
+  
+  //flutter jump
+  float flutter = 0;
+  
+  boolean fluttering = false;
+  boolean alreadyFluttered = false;
 
   Player(float _x, float _y)
   {
@@ -50,20 +60,27 @@ class Player
       if (x <= 0) x = width;
       fill(255);
     }
-
-
-    // jump
-    if (keyW) { 
-      // only jump if we are on solid ground (not falling, not jumping)
-      if (jumpPower == 0)
-      {
-        jumpPower = 7;
-      }
+    
+    //flutter
+    boolean inAir = jumpPower != 0;
+    if (inAir && keyW && !alreadyFluttered) {
+      fluttering = true;
+      alreadyFluttered = true;
+      remainingFlutterFrames = 40;
     }
     
-    // jump
+    if (fluttering) {
+       jumpPower += 0.22;
+       remainingFlutterFrames--;
+       if (remainingFlutterFrames <= 0) {
+         fluttering = false;
+       }
+    }
+        
+    // jump charge
     if (keyS && jumpPower == 0) { 
       charge += 0.2;
+      if (charge >= 7) charge = 7;
     }
 
     if (!keyS && jumpPower == 0) {
@@ -86,14 +103,17 @@ class Player
 //    println("jumppower: " + jumpPower);
 
     boolean canLand = jumpPower <= 0;
-    if (isSolid(downTileCode) && !isSolid(currTileCode) && canLand)
+    if (isSolid(downTileCode) && !isSolid(currTileCode) && canLand) //land on a tile.
     {
+      fluttering = false;
+      alreadyFluttered = false;
       jumpPower = 0;
       fill(255);
       text("Tile below mario is SOLID. jumpPower=" + jumpPower, 20, 20);
     } else
     {
       jumpPower -= 0.2;
+      if (jumpPower <= -5) jumpPower = -5;
       fill(255);
       text("Tile below mario is NOT SOLID. jumpPower=" + jumpPower, 20, 20);
     }
