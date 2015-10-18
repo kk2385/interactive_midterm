@@ -124,7 +124,6 @@ class Player
 
     // apply jump power (if we are actively jumping this will push us up into the sky)
     y -= jumpPower;
-    if (offset <= 0) y += cameraPace; //move mario with camera.
 
     // always pull down the character (gravity) if we aren't on solid land
 //    print("down:");
@@ -167,10 +166,8 @@ class Player
           artwork = airRight;
         }
       } else if (keyS) {
-        System.out.println("animation: charing right!!");
         artwork = chargeRight;
       } else {
-        System.out.println("animation: right");
         artwork = right;
       }
     } else { //facing left.
@@ -191,6 +188,16 @@ class Player
     }
   }
 
+
+  boolean isTouchingCoin() {
+    int currTileCode = getTileCode(x + PLAYER_SIZE/2, y + PLAYER_SIZE/2, offset);
+    return isCoin(currTileCode);
+  }
+
+  boolean isBelowMap() {
+    return y+PLAYER_SIZE >= height;
+  }
+  
   // draw the player
   void display()
   {

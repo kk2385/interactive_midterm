@@ -19,17 +19,17 @@ class StageGenerator {
         }
       }
     }
-    //bottom row is all solids
+    //bottom row is all solids, top row is all air.
     for (int i = 0; i < stage[stage.length-1].length; i++) {
       stage[stage.length-1][i] = 0;
+      stage[0][i] = 1;
+
     }
     
-    for (int i = 0; i < stage.length; i++) {
-      for (int j = 0; j < stage[i].length; j++) {
-        System.out.print(stage[i][j] + " ");
-      }
-      System.out.println();
-    }
+    //somewhere in the top row there's a coin. this is exit.
+    int rand = (int)random(1, 500/CELL_SIZE);
+    stage[1][rand] = 2;
+    
     return stage;
   }
 }

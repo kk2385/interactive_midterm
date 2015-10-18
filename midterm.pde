@@ -7,7 +7,7 @@ boolean keyW = false;
 int CELL_SIZE = 25;
 int PLAYER_SIZE = 50;
 // an Array to hold all of our tiles
-PImage[] tiles = new PImage[2];
+PImage[] tiles = new PImage[3];
 
 StageGenerator sg = new StageGenerator(40);
 int[][] level;
@@ -25,15 +25,32 @@ void setup() {
   offset = (-CELL_SIZE*level.length) + CELL_SIZE*(width/CELL_SIZE);
 }
 
+
+void resetGame() {
+  level = sg.generate();
+  squid = new Player(0, 300);
+  offset = (-CELL_SIZE*level.length) + CELL_SIZE*(width/CELL_SIZE);
+}
+
 void draw() {
   drawLevel();
-  if (offset <= 0) offset+=cameraPace;
-  
-  println(offset + "    11 " + level.length);
+  adjustCameraView();
   squid.move();
-   println(offset + "   22 " + level.length);
-
   squid.display();
+  if (squid.isBelowMap()) {
+    resetGame();
+  }
+  System.out.println("touching coin:" + squid.isTouchingCoin());
+}
+
+void adjustCameraView() {
+//  System.out.println("offset: " + offset);
+  if (offset < 0 && squid.y <= width/3) {
+    offset+=2;
+    squid.y+=2;
+  }
+  if (offset >= 0) offset = 0;
+  
 }
 
 // load our tiles into memory
@@ -52,7 +69,12 @@ void drawLevel()
   {
     for (int col = 0; col < level[row].length; col++)
     {
-      image( tiles[ level[row][col] ], col*CELL_SIZE, offset+row*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      int tileID = level[row][col];
+      image( tiles[tileID], col*CELL_SIZE, offset+row*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      if (tileID == 2) { //gold coin: draw air background behind it, then draw the coin.
+        image(tiles[1], col*CELL_SIZE, offset+row*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        image(tiles[tileID], col*CELL_SIZE, offset+row*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      }
     }
   }
 }
@@ -63,7 +85,7 @@ int getTileCode(float x, float y, float offset)
   // convert x & y coordinate to an array coordinate
   int col = int(x)/CELL_SIZE;
   int row = int(y + abs(offset))/CELL_SIZE;
-  System.out.printf("y: %f level:[%d][%d]\n", y, row, col);
+//  System.out.printf("y: %f level:[%d][%d]\n", y, row, col);
   // off board test
   if (x >= width || x <= 0 || y >= height || y <= 0)
   {
@@ -80,15 +102,11 @@ int getTileCode(float x, float y, float offset)
 // you can update this function so you can support multiple solid tiles
 boolean isSolid(int tileCode)
 {
-  if (tileCode == 1)
-  {
-    return false;
-  } 
-  
-  else
-  {
-    return true;
-  }
+  return tileCode == 0;
+}
+
+boolean isCoin(int tileCode) {
+  return tileCode == 2;
 }
 
 
