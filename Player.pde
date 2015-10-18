@@ -1,8 +1,27 @@
 class Player
 {
+  
+  boolean DEBUG = false;
+
   // artwork
   PImage artwork;
-
+  PImage right;
+  PImage left;
+  PImage chargeRight;
+  PImage chargeLeft;
+  PImage airRight;
+  PImage airLeft;
+  PImage flutterRight;
+  PImage flutterLeft;
+  PImage fallingRight;
+  PImage fallingLeft;
+  
+  
+  PImage[] flutterAnimationLeft;
+  PImage[] flutterAnimationRight;
+  int currFlutterFrame;
+  
+  boolean facingRight = true;
   // location
   float x, y;
 
@@ -14,7 +33,6 @@ class Player
   
   //charge jump
   float charge = 0;
-  
   
   //frame count for flutter (dont wanna flutter forever)
   int remainingFlutterFrames = 0;
@@ -32,37 +50,53 @@ class Player
     y = _y;
 
     // load artwork
-    artwork = loadImage("marioright.png");
+    artwork = loadImage("yoshi_right.png");
+    right = loadImage("yoshi_right.png");
+    left = loadImage("yoshi_left.png");
+    chargeRight = loadImage("charge_right.png");
+    chargeLeft = loadImage("charge_left.png");
+    airLeft = loadImage("jump_left.png");
+    airRight = loadImage("jump_right.png");
+    fallingRight = loadImage("falling_right.png");
+    fallingLeft = loadImage("falling_left.png");
+    flutterAnimationLeft = new PImage[2];
+    flutterAnimationRight = new PImage[2]; 
+    for (int i = 0; i < 2; i++) {
+      flutterAnimationLeft[i] = loadImage("flutter_left_" + i + ".png");
+      flutterAnimationRight[i] = loadImage("flutter_right_" + i + ".png");
+    }
   }  
 
   void move()
   {
     // move right
+    boolean inAir = jumpPower != 0;
     if (keyD) 
     {
       // we need to check to see what tile is to our right (by 3 pixels or so)
-      int tileCode = getTileCode(x + CELL_SIZE + 3, y + CELL_SIZE/2, offset);
+      int tileCode = getTileCode(x + PLAYER_SIZE + 3, y + PLAYER_SIZE/2, offset);
 
       // debugging ellipse (to show the point that we are checking)
-      ellipse(x + CELL_SIZE + 3, y+CELL_SIZE/2, 10, 10);
+      if (DEBUG) ellipse(x + PLAYER_SIZE + 3, y+PLAYER_SIZE/2, 10, 10);
 
       x += speed;
       if (x >= width) x = 0;
       fill(255);
+      facingRight = !inAir? true : facingRight; //change to right if not in air.
     }
 
     // left
     if (keyA) 
     { 
       // debugging ellipse
-      ellipse(x-3, y+CELL_SIZE/2, 10, 10);
+      if (DEBUG) ellipse(x-3, y+PLAYER_SIZE/2, 10, 10);
       x -= speed;
       if (x <= 0) x = width;
       fill(255);
+      facingRight = !inAir? false : facingRight; //change to left if not in air.
     }
     
     //flutter
-    boolean inAir = jumpPower != 0;
     if (inAir && keyW && !alreadyFluttered) {
       fluttering = true;
       alreadyFluttered = true;
@@ -94,12 +128,12 @@ class Player
 
     // always pull down the character (gravity) if we aren't on solid land
 //    print("down:");
-    int downTileCode = getTileCode(x + CELL_SIZE/2, y + CELL_SIZE+3, offset);
-    int currTileCode = getTileCode(x + CELL_SIZE/2, y + CELL_SIZE-5, offset);
+    int downTileCode = getTileCode(x + PLAYER_SIZE/2, y + PLAYER_SIZE+3, offset);
+    int currTileCode = getTileCode(x + PLAYER_SIZE/2, y + PLAYER_SIZE-5, offset);
     // debugging ellipse
-    ellipse(x+CELL_SIZE/2, y+CELL_SIZE+3, 10, 10);
+    if (DEBUG) ellipse(x+PLAYER_SIZE/2, y+PLAYER_SIZE+3, 10, 10);
     fill(255,200,5);
-    ellipse(x+CELL_SIZE/2, y+CELL_SIZE-5, 10, 10);
+    if (DEBUG) ellipse(x+PLAYER_SIZE/2, y+PLAYER_SIZE-5, 10, 10);
 //    println("jumppower: " + jumpPower);
 
     boolean canLand = jumpPower <= 0;
@@ -119,11 +153,49 @@ class Player
     }
   }
 
+  
+  void setArtwork() {
+    boolean inAir = jumpPower != 0;
+    if (facingRight) {
+      if (inAir) {
+        if (fluttering) {
+          currFlutterFrame = (frameCount % 10) >= 5? 0 : 1;
+          artwork = flutterAnimationRight[currFlutterFrame];
+        } else if (alreadyFluttered) {
+          artwork = fallingRight;      
+        } else {
+          artwork = airRight;
+        }
+      } else if (keyS) {
+        System.out.println("animation: charing right!!");
+        artwork = chargeRight;
+      } else {
+        System.out.println("animation: right");
+        artwork = right;
+      }
+    } else { //facing left.
+      if (inAir) {
+        if (fluttering) {
+          currFlutterFrame = (frameCount % 10) >= 5? 0 : 1;
+          artwork = flutterAnimationLeft[currFlutterFrame];
+        } else if (alreadyFluttered) {
+          artwork = fallingLeft;      
+        } else {
+          artwork = airLeft;
+        }
+      } else if (keyS) {
+        artwork = chargeLeft;
+      } else {
+        artwork = left;
+      }
+    }
+  }
 
   // draw the player
   void display()
   {
-    image(artwork, x, y, CELL_SIZE, CELL_SIZE);
+    setArtwork();
+    image(artwork, x, y, PLAYER_SIZE, PLAYER_SIZE);
   }
 }
 

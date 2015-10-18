@@ -4,11 +4,12 @@ boolean keyS = false;
 boolean keyD = false;
 boolean keyW = false;
 
-int CELL_SIZE = 50;
+int CELL_SIZE = 25;
+int PLAYER_SIZE = 50;
 // an Array to hold all of our tiles
 PImage[] tiles = new PImage[2];
 
-StageGenerator sg = new StageGenerator(16);
+StageGenerator sg = new StageGenerator(40);
 int[][] level;
 
 float offset;
@@ -21,15 +22,17 @@ void setup() {
   loadTiles();
   squid = new Player(0, 300);
   level = sg.generate();
-  offset = (-CELL_SIZE*level.length) + CELL_SIZE*10;
+  offset = (-CELL_SIZE*level.length) + CELL_SIZE*(width/CELL_SIZE);
 }
 
 void draw() {
   drawLevel();
   if (offset <= 0) offset+=cameraPace;
   
-//  println(offset + " " + level.length);
+  println(offset + "    11 " + level.length);
   squid.move();
+   println(offset + "   22 " + level.length);
+
   squid.display();
 }
 
@@ -60,7 +63,7 @@ int getTileCode(float x, float y, float offset)
   // convert x & y coordinate to an array coordinate
   int col = int(x)/CELL_SIZE;
   int row = int(y + abs(offset))/CELL_SIZE;
-  //System.out.printf("y: %f level:[%d][%d]\n", y, row, col);
+  System.out.printf("y: %f level:[%d][%d]\n", y, row, col);
   // off board test
   if (x >= width || x <= 0 || y >= height || y <= 0)
   {
