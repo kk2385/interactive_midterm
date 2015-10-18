@@ -22,7 +22,6 @@ Player squid; // in our version it's a yoshi, though
 
 boolean deathScreen; //death screen toggle
 
-
 void setup() {
   size(500, 500);
   loadTiles();
@@ -41,6 +40,7 @@ void draw() {
   }
 }
 
+//interactions during game play
 void gamePlaying() {
   drawLevel();
   adjustCameraView();
@@ -79,6 +79,7 @@ void deathScreen() {
   }  
 }
 
+//death screen toggles
 void goToDeathScreen() {deathScreen = true;}
 void exitDeathScreen() {deathScreen = false;}
 
@@ -88,6 +89,8 @@ void resetStage() {
   resetCameraAngle();
 }
 
+
+//text representation of score
 void displayScore() {
   text("High Score: " + highScore, 20, 30);
   text("Score: " + squid.totalScore, 20, 50);
@@ -95,7 +98,7 @@ void displayScore() {
   text("Level: " + squid.currLevel, 20, 90);
 }
 
-//create a brand new game.
+//create a brand new game. used for after game over.
 void newGame() {
   resetStage();
   squid = new Player(0, 300);
@@ -103,17 +106,22 @@ void newGame() {
   displayScore();
 }
 
+
+//resets the camera to the bottom of the level
 void resetCameraAngle() {
   offset = (-CELL_SIZE*level.length) + CELL_SIZE*(width/CELL_SIZE);  
 }
 
+
+//Goes to the next level for the player by creating a new stage and incrementing level.
 void toNextStage() {
   resetStage();
   squid.respawn();
   squid.currLevel++;
-  resetCameraAngle();
 }
 
+
+//Sets high score if current player's score is better than high score.
 void setHighScore() {
   highScore = max(highScore, squid.totalScore);
 }
