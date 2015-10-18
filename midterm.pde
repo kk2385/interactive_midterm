@@ -12,67 +12,120 @@ int PLAYER_SIZE = 50;
 // an Array to hold all of our tiles
 PImage[] tiles = new PImage[3];
 
-StageGenerator sg = new StageGenerator(40);
+StageGenerator sg;
 int[][] level;
 
 float offset; //camera offset.
 
-Player squid; // really it's a yoshi.
+int highScore;
+Player squid; // in our version it's a yoshi, though
+
+boolean deathScreen; //death screen toggle
+
 
 void setup() {
   size(500, 500);
   loadTiles();
   squid = new Player(0, 300);
-  level = sg.generate();
-  offset = (-CELL_SIZE*level.length) + height; // total height of stage - height of screen
-}
-
-void displayScore() {
-  text("Score: " + squid.totalScore, 20, 30);
-  text("Level: " + squid.currLevel, 20, 50);
-}
-
-
-
-void resetGame() {
-  level = sg.generate();
-  squid = new Player(0, 300);
-  resetCameraAngle();
-  displayScore();
-}
-
-void toNextStage() {
-  level = sg.generate();
-  squid.respawn();
-  squid.currLevel++;
-  resetCameraAngle();
-}
-
-void resetCameraAngle() {
-    offset = (-CELL_SIZE*level.length) + CELL_SIZE*(width/CELL_SIZE);  
+  sg = new StageGenerator(40);
+  resetStage();
+  highScore = 0;
+  deathScreen = false;
 }
 
 void draw() {
+  if (deathScreen) {
+    deathScreen();
+  } else {
+    gamePlaying();
+  }
+}
+
+void gamePlaying() {
   drawLevel();
   adjustCameraView();
   squid.move();
   squid.display();
   if (squid.isBelowMap()) {
-    resetGame();
+    goToDeathScreen();
+    squid.die();
+    resetStage();
   }
   if (squid.isTouchingCoin()) {
     toNextStage();
   }
-  squid.updateScore(); 
+  squid.updateScore();
+  setHighScore();
   displayScore();
 }
+
+//intereactions with death screen
+void deathScreen() {
+  background(0);
+  if (squid.livesRemaining > 0) { //there are still lives
+    text("You are dead!", 20, 20);
+    text("Lives remaining: " + squid.livesRemaining, 20, 40);
+    text("Press space to continue.", 20, 60);
+    if (keyPressed && key==' ') {
+      exitDeathScreen();
+    }
+  } else { //no more lives.
+    text("Game Over!", 20, 20);
+    text("Press space to start a new game.", 20, 40);
+    if (keyPressed && key==' ') {
+      exitDeathScreen();
+      newGame();
+    }
+  }  
+}
+
+void goToDeathScreen() {deathScreen = true;}
+void exitDeathScreen() {deathScreen = false;}
+
+//resets camera angle and then produces new stage.
+void resetStage() {
+  level = sg.generate();
+  resetCameraAngle();
+}
+
+void displayScore() {
+  text("High Score: " + highScore, 20, 30);
+  text("Score: " + squid.totalScore, 20, 50);
+  text("Lives Remaining: " + squid.livesRemaining, 20, 70);
+  text("Level: " + squid.currLevel, 20, 90);
+}
+
+//create a brand new game.
+void newGame() {
+  resetStage();
+  squid = new Player(0, 300);
+  resetCameraAngle();
+  displayScore();
+}
+
+void resetCameraAngle() {
+  offset = (-CELL_SIZE*level.length) + CELL_SIZE*(width/CELL_SIZE);  
+}
+
+void toNextStage() {
+  resetStage();
+  squid.respawn();
+  squid.currLevel++;
+  resetCameraAngle();
+}
+
+void setHighScore() {
+  highScore = max(highScore, squid.totalScore);
+}
+
+
 
 // Updates the camera view of the game depending on Yoshi's location.
 void adjustCameraView() {
 //  System.out.println("offset: " + offset);
   if (offset < 0 && squid.y <= width/3) { //move camera up if yoshi is in the top 1/3 of screen.
     offset+=2;
-    squid.y+=2;
+    squid.y+=2; //move our character up too, since the world is technically "shifting".
   }
   if (offset >= 0) offset = 0;
 }

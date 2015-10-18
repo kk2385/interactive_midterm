@@ -12,42 +12,40 @@ class Player
   PImage flutterLeft;
   PImage fallingRight;
   PImage fallingLeft;
-  
   PImage[] flutterAnimationLeft;
   PImage[] flutterAnimationRight;
   int currFlutterFrame;
   
+  //orientation
   boolean facingRight = true;
+  
   // location
   float x, y;
 
   // speed (constant)
   float speed = 3;
 
-  // jump power
+  // jump related
   float jumpPower = 0;
-  
-  //charge jump
-  float charge = 0;
-  
+  float charge = 0; 
   //frame count for flutter (dont wanna flutter forever)
-  int remainingFlutterFrames = 0;
-  
-  //flutter jump
-  float flutter = 0;
-  
+  int remainingFlutterFrames = 0;  
   boolean fluttering = false;
   boolean alreadyFluttered = false;
-  
+ 
+  //game stats
+  int livesRemaining;
   int currLevel = 1;
   int totalScore = 0;
   int highestGroundThisStage = 0;
 
-  Player(float _x, float _y)
-  {
+  Player(float _x, float _y) {
     // store position
     x = _x;
     y = _y;
+
+    //start with 3 lives.
+    livesRemaining = 3;
 
     // load artwork
     artwork = loadImage("yoshi_right.png");
@@ -183,15 +181,18 @@ class Player
     }
   }
   
-  
+  //sets to default spawning position. Use when going to new stage.
   void respawn() {
     x = 0;
-    y = 400;
+    y = 300;
     highestGroundThisStage = 0;
   }
   
-
-
+  //lose a live, score reset, then respawn.
+  void die() {
+    livesRemaining--;
+    respawn();
+  }
 
   boolean isTouchingCoin() {
     int currTileCode = getTileCode(x + PLAYER_SIZE/2, y + PLAYER_SIZE/2, offset);
