@@ -92,6 +92,7 @@ void resetStage() {
 
 //text representation of score
 void displayScore() {
+  fill(255);
   text("High Score: " + highScore, 20, 30);
   text("Score: " + squid.totalScore, 20, 50);
   text("Lives Remaining: " + squid.livesRemaining, 20, 70);
@@ -126,8 +127,6 @@ void setHighScore() {
   highScore = max(highScore, squid.totalScore);
 }
 
-
-
 // Updates the camera view of the game depending on Yoshi's location.
 void adjustCameraView() {
 //  System.out.println("offset: " + offset);
@@ -155,7 +154,7 @@ void drawLevel() {
   }
 }
 
-// getTileCode - modified from lecture code to take into account camera offset.
+// gets the current tile under the x, y, and current camera offset.
 int getTileCode(float x, float y, float offset) {
   // convert x & y coordinate to an array coordinate
   int col = int(x)/CELL_SIZE;
@@ -168,8 +167,7 @@ int getTileCode(float x, float y, float offset) {
 }
 
 // isSolid - returns true if the tile in question is solid, false if not.
-boolean isSolid(int tileCode)
-{
+boolean isSolid(int tileCode) {
   return tileCode == 0;
 }
 

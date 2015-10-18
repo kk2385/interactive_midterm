@@ -32,6 +32,7 @@ class Player
   int remainingFlutterFrames = 0;  
   boolean fluttering = false;
   boolean alreadyFluttered = false;
+  float animationRadius; //for animating power radius around yoshi.
  
   //game stats
   int livesRemaining;
@@ -71,10 +72,8 @@ class Player
     if (keyD) {
       // we need to check to see what tile is to our right (by 3 pixels or so)
       int tileCode = getTileCode(x + PLAYER_SIZE + 3, y + PLAYER_SIZE/2, offset);
-
       // debugging ellipse (to show the point that we are checking)
       if (DEBUG) ellipse(x + PLAYER_SIZE + 3, y+PLAYER_SIZE/2, 10, 10);
-
       x += speed;
       if (x >= width) x = 0;
       fill(255);
@@ -211,9 +210,23 @@ class Player
     }
   }
   
+  void displayCharge() {
+    if (keyS) {
+      animationRadius = charge*charge*charge / 2; //just an arbitrary value i found suitable as a radius.
+    } else {
+      animationRadius *= 0.9; //slowly decrease it
+      if (animationRadius <= 0) animationRadius = 0;
+    }
+    noFill();
+    stroke(15, 255, 15, 200);
+    strokeWeight(8);
+    if (animationRadius <= 1) animationRadius = 1; //avoid gross overflow / clunky animation
+    ellipse(x+PLAYER_SIZE/2, y+PLAYER_SIZE/2+10, animationRadius, animationRadius);
+  }
   // draw the player
   void display() {
     setArtwork();
+    displayCharge();
     image(artwork, x, y, PLAYER_SIZE, PLAYER_SIZE);
   }
 }
