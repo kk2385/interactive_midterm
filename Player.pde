@@ -1,8 +1,5 @@
 class Player
 {
-  
-  boolean DEBUG = false;
-
   // artwork
   PImage artwork;
   PImage right;
@@ -15,7 +12,6 @@ class Player
   PImage flutterLeft;
   PImage fallingRight;
   PImage fallingLeft;
-  
   
   PImage[] flutterAnimationLeft;
   PImage[] flutterAnimationRight;
@@ -42,6 +38,10 @@ class Player
   
   boolean fluttering = false;
   boolean alreadyFluttered = false;
+  
+  int currLevel = 1;
+  int totalScore = 0;
+  int highestGroundThisStage = 0;
 
   Player(float _x, float _y)
   {
@@ -67,12 +67,10 @@ class Player
     }
   }  
 
-  void move()
-  {
+  void move() {
     // move right
     boolean inAir = jumpPower != 0;
-    if (keyD) 
-    {
+    if (keyD) {
       // we need to check to see what tile is to our right (by 3 pixels or so)
       int tileCode = getTileCode(x + PLAYER_SIZE + 3, y + PLAYER_SIZE/2, offset);
 
@@ -86,8 +84,7 @@ class Player
     }
 
     // left
-    if (keyA) 
-    { 
+    if (keyA) { 
       // debugging ellipse
       if (DEBUG) ellipse(x-3, y+PLAYER_SIZE/2, 10, 10);
       x -= speed;
@@ -136,28 +133,26 @@ class Player
 //    println("jumppower: " + jumpPower);
 
     boolean canLand = jumpPower <= 0;
-    if (isSolid(downTileCode) && !isSolid(currTileCode) && canLand) //land on a tile.
-    {
+    if (isSolid(downTileCode) && !isSolid(currTileCode) && canLand) { //land on a tile.
       fluttering = false;
       alreadyFluttered = false;
       jumpPower = 0;
       fill(255);
-      text("Tile below mario is SOLID. jumpPower=" + jumpPower, 20, 20);
-    } else
-    {
+      if (DEBUG) text("Tile below is SOLID. jumpPower=" + jumpPower, 20, 20);
+    } else {
       jumpPower -= 0.2;
       if (jumpPower <= -5) jumpPower = -5;
       fill(255);
-      text("Tile below mario is NOT SOLID. jumpPower=" + jumpPower, 20, 20);
+      if (DEBUG) text("Tile below is NOT SOLID. jumpPower=" + jumpPower, 20, 20);
     }
   }
 
   
   void setArtwork() {
     boolean inAir = jumpPower != 0;
-    if (facingRight) {
-      if (inAir) {
-        if (fluttering) {
+    if (facingRight) { // facing right.
+      if (inAir) { //all in air operations
+        if (fluttering) { 
           currFlutterFrame = (frameCount % 10) >= 5? 0 : 1;
           artwork = flutterAnimationRight[currFlutterFrame];
         } else if (alreadyFluttered) {
@@ -165,9 +160,9 @@ class Player
         } else {
           artwork = airRight;
         }
-      } else if (keyS) {
+      } else if (keyS) { // charging on ground. 
         artwork = chargeRight;
-      } else {
+      } else { //on ground.
         artwork = right;
       }
     } else { //facing left.
@@ -187,6 +182,15 @@ class Player
       }
     }
   }
+  
+  
+  void respawn() {
+    x = 0;
+    y = 400;
+    highestGroundThisStage = 0;
+  }
+  
+
 
 
   boolean isTouchingCoin() {
@@ -198,9 +202,16 @@ class Player
     return y+PLAYER_SIZE >= height;
   }
   
+  void updateScore() {
+    int currHeight = CELL_SIZE*level.length-int(squid.y + abs(offset)); //total height of stage - distance yet to travel.
+    if (currHeight > highestGroundThisStage) {
+      totalScore += currHeight - highestGroundThisStage;
+      highestGroundThisStage = currHeight;
+    }
+  }
+  
   // draw the player
-  void display()
-  {
+  void display() {
     setArtwork();
     image(artwork, x, y, PLAYER_SIZE, PLAYER_SIZE);
   }
