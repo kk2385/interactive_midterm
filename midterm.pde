@@ -1,3 +1,12 @@
+// import sound library
+import ddf.minim.*;
+Minim minim;
+AudioPlayer yoshiNoise;
+AudioPlayer dyingNoise;
+AudioPlayer flyingNoise;
+AudioPlayer shortHopNoise;
+AudioPlayer maxPowerNoise;
+
 //enable print messages
 boolean DEBUG = false;
 
@@ -32,7 +41,17 @@ void setup() {
   resetCameraAngle();
   highScore = 0;
   deathScreen = false;
+<<<<<<< HEAD
+  minim = new Minim(this);
+  yoshiNoise = minim.loadFile("sounds/Yoshi.mp3");
+  dyingNoise = minim.loadFile("sounds/Dying.mp3");
+  flyingNoise = minim.loadFile("sounds/Flying.mp3");
+  shortHopNoise = minim.loadFile("sounds/Short Hop.mp3");
+  maxPowerNoise = minim.loadFile("sounds/Max Power.mp3");
+    
+=======
   lava = new Lava();
+>>>>>>> 3de2a6a98446439d20f001cd9353f8cedd3d2b36
 }
 
 void draw() {
@@ -53,10 +72,16 @@ void gamePlaying() {
   squid.display();
   if (squid.isBelowMap() || squid.isTouchingLava(lava)) {
     goToDeathScreen();
+    dyingNoise.pause();
+    dyingNoise.rewind();
+    dyingNoise.play();
     squid.die();
     resetStage();
   }
   if (squid.isTouchingCoin()) {
+    yoshiNoise.pause();
+    yoshiNoise.rewind();
+    yoshiNoise.play();
     toNextStage();
   }
   squid.updateScore();
