@@ -1,11 +1,11 @@
 class Lava {
   
-  float lavaHeight = 0;
+  float lavaHeight;
   float speed = 1;
   PImage art;
   
   Lava() {
-    lavaHeight = 0;
+    lavaHeight = -100; //start below map
     art = loadImage("lava.png");
   }
   
@@ -13,9 +13,20 @@ class Lava {
     lavaHeight += speed;
   }
     
+  
+  void reset() {
+    lavaHeight = -100;
+  }  
+    
   void display() {
-    int pixelsOnTop = abs(offset);
-    int levelTotalHeight = CELL_SIZE*level.length();
-    image(art, 0, y, 500, 500);
+    float pixelsOnTop = abs(offset) + height;
+    float levelTotalHeight = CELL_SIZE*level.length;
+    float gameBottomHeight = levelTotalHeight-pixelsOnTop;
+    if (lavaHeight >= gameBottomHeight) {
+      System.out.println("lavaHeight: " + lavaHeight);
+      System.out.println("gameBottomHeight: " + gameBottomHeight);
+      System.out.println("lavaHeight-gameBottomHeight"+(lavaHeight-gameBottomHeight));
+      image(art, 0, -(lavaHeight-gameBottomHeight)+height, 500, 500);
+    }    
   }
 }

@@ -19,7 +19,7 @@ class Player
   //orientation
   boolean facingRight = true;
   
-  // location
+  // (rendered) location 
   float x, y;
 
   // speed (constant)
@@ -200,6 +200,15 @@ class Player
 
   boolean isBelowMap() {
     return y+PLAYER_SIZE >= height;
+  }
+  
+  boolean isTouchingLava(Lava lava) {
+    return getActualHeight()-PLAYER_SIZE < lava.lavaHeight;
+  }
+  
+  //height respect to the bottom of the level.
+  float getActualHeight() {
+    return CELL_SIZE*level.length-int(squid.y + abs(offset)); //total height of stage - distance yet to travel.
   }
   
   void updateScore() {

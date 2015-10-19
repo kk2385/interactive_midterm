@@ -28,7 +28,8 @@ void setup() {
   loadTiles();
   squid = new Player(0, 300);
   sg = new StageGenerator(40);
-  resetStage();
+  level = sg.generate();
+  resetCameraAngle();
   highScore = 0;
   deathScreen = false;
   lava = new Lava();
@@ -50,7 +51,7 @@ void gamePlaying() {
   lava.display();
   squid.move();
   squid.display();
-  if (squid.isBelowMap()) {
+  if (squid.isBelowMap() || squid.isTouchingLava(lava)) {
     goToDeathScreen();
     squid.die();
     resetStage();
@@ -90,6 +91,7 @@ void exitDeathScreen() {deathScreen = false;}
 //resets camera angle and then produces new stage.
 void resetStage() {
   level = sg.generate();
+  lava.reset();
   resetCameraAngle();
 }
 
