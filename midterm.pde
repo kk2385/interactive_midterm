@@ -30,6 +30,7 @@ int highScore;
 Player squid; // in our version it's a yoshi, though
 
 boolean deathScreen; //death screen toggle
+Lava lava;
 
 void setup() {
   size(500, 500);
@@ -39,6 +40,7 @@ void setup() {
   resetStage();
   highScore = 0;
   deathScreen = false;
+<<<<<<< HEAD
   minim = new Minim(this);
   yoshiNoise = minim.loadFile("sounds/Yoshi.mp3");
   dyingNoise = minim.loadFile("sounds/Dying.mp3");
@@ -46,6 +48,9 @@ void setup() {
   shortHopNoise = minim.loadFile("sounds/Short Hop.mp3");
   maxPowerNoise = minim.loadFile("sounds/Max Power.mp3");
     
+=======
+  lava = new Lava();
+>>>>>>> 3de2a6a98446439d20f001cd9353f8cedd3d2b36
 }
 
 void draw() {
@@ -60,6 +65,8 @@ void draw() {
 void gamePlaying() {
   drawLevel();
   adjustCameraView();
+  lava.move();
+  lava.display();
   squid.move();
   squid.display();
   if (squid.isBelowMap()) {
