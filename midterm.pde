@@ -21,6 +21,7 @@ int highScore;
 Player squid; // in our version it's a yoshi, though
 
 boolean deathScreen; //death screen toggle
+Lava lava;
 
 void setup() {
   size(500, 500);
@@ -30,6 +31,7 @@ void setup() {
   resetStage();
   highScore = 0;
   deathScreen = false;
+  lava = new Lava();
 }
 
 void draw() {
@@ -44,6 +46,8 @@ void draw() {
 void gamePlaying() {
   drawLevel();
   adjustCameraView();
+  lava.move();
+  lava.display();
   squid.move();
   squid.display();
   if (squid.isBelowMap()) {
