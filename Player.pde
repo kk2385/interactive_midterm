@@ -1,3 +1,4 @@
+import ddf.minim.*;
 class Player
 {
   // artwork
@@ -15,6 +16,7 @@ class Player
   PImage[] flutterAnimationLeft;
   PImage[] flutterAnimationRight;
   int currFlutterFrame;
+  Minim minim = new Minim(this);
   
   //orientation
   boolean facingRight = true;
@@ -45,6 +47,11 @@ class Player
     x = _x;
     y = _y;
 
+    //sounds
+//    AudioPlayer flyingNoise = minim.loadFile("sounds/Flying.mp3");
+//    AudioPlayer shortHopNoise = minim.loadFile("sounds/Short Hop.mp3");
+//    AudioPlayer maxPowerNoise = minim.loadFile("sounds/Max Power.mp3");
+    
     //start with 3 lives.
     livesRemaining = 3;
 
@@ -93,6 +100,9 @@ class Player
     //flutter
     if (inAir && keyW && !alreadyFluttered) {
       fluttering = true;
+      flyingNoise.pause();
+      flyingNoise.rewind();
+      flyingNoise.play();
       alreadyFluttered = true;
       remainingFlutterFrames = 40;
     }
@@ -108,12 +118,21 @@ class Player
     // jump charge
     if (keyS && jumpPower == 0) { 
       charge += 0.2;
-      if (charge >= 7) charge = 7;
+      if (charge >= 7) {
+        charge = 7;
+//        maxPowerNoise.pause();
+//        maxPowerNoise.rewind();
+//        maxPowerNoise.play();
+      }
     }
 
     if (!keyS && jumpPower == 0) {
       jumpPower = charge;
       charge = 0.;
+      shortHopNoise.pause();
+      shortHopNoise.rewind();
+      shortHopNoise.play();
+
     }
 
     // apply jump power (if we are actively jumping this will push us up into the sky)

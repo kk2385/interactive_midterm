@@ -1,3 +1,12 @@
+// import sound library
+import ddf.minim.*;
+Minim minim;
+AudioPlayer yoshiNoise;
+AudioPlayer dyingNoise;
+AudioPlayer flyingNoise;
+AudioPlayer shortHopNoise;
+AudioPlayer maxPowerNoise;
+
 //enable print messages
 boolean DEBUG = false;
 
@@ -30,6 +39,13 @@ void setup() {
   resetStage();
   highScore = 0;
   deathScreen = false;
+  minim = new Minim(this);
+  yoshiNoise = minim.loadFile("sounds/Yoshi.mp3");
+  dyingNoise = minim.loadFile("sounds/Dying.mp3");
+  flyingNoise = minim.loadFile("sounds/Flying.mp3");
+  shortHopNoise = minim.loadFile("sounds/Short Hop.mp3");
+  maxPowerNoise = minim.loadFile("sounds/Max Power.mp3");
+    
 }
 
 void draw() {
@@ -48,10 +64,16 @@ void gamePlaying() {
   squid.display();
   if (squid.isBelowMap()) {
     goToDeathScreen();
+    dyingNoise.pause();
+    dyingNoise.rewind();
+    dyingNoise.play();
     squid.die();
     resetStage();
   }
   if (squid.isTouchingCoin()) {
+    yoshiNoise.pause();
+    yoshiNoise.rewind();
+    yoshiNoise.play();
     toNextStage();
   }
   squid.updateScore();
