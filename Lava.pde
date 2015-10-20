@@ -23,10 +23,7 @@ class Lava {
     float levelTotalHeight = CELL_SIZE*level.length;
     float gameBottomHeight = levelTotalHeight-pixelsOnTop;
     if (lavaHeight >= gameBottomHeight) {
-      System.out.println("lavaHeight: " + lavaHeight);
-      System.out.println("gameBottomHeight: " + gameBottomHeight);
-      System.out.println("lavaHeight-gameBottomHeight"+(lavaHeight-gameBottomHeight));
-      image(art, 0, -(lavaHeight-gameBottomHeight)+height, 500, 500);
+     image(art, 0, -(lavaHeight-gameBottomHeight)+height, 500, 500);
     }    
   }
 }
