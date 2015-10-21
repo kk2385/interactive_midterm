@@ -16,6 +16,9 @@ boolean keyS = false;
 boolean keyD = false;
 boolean keyW = false;
 
+//death screen
+PImage death;
+
 int CELL_SIZE = 25;
 int PLAYER_SIZE = 50;
 // an Array to hold all of our tiles
@@ -91,7 +94,8 @@ void gamePlaying() {
 
 //intereactions with death screen
 void deathScreen() {
-  background(0);
+  death = loadImage("data/gameover.png");
+  background(death);
   if (squid.livesRemaining > 0) { //there are still lives
     text("You are dead!", 20, 20);
     text("Lives remaining: " + squid.livesRemaining, 20, 40);
