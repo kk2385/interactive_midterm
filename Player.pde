@@ -1,4 +1,3 @@
-import ddf.minim.*;
 class Player
 {
   // artwork
@@ -15,9 +14,7 @@ class Player
   PImage fallingLeft;
   PImage[] flutterAnimationLeft;
   PImage[] flutterAnimationRight;
-  int currFlutterFrame;
-  Minim minim = new Minim(this);
-  
+  int currFlutterFrame;  
   //orientation
   boolean facingRight = true;
   
@@ -74,14 +71,6 @@ class Player
       flutterAnimationRight[i] = loadImage("flutter_right_" + i + ".png");
     }
   }  
-
-  void resetSound() {
-    AudioPlayer[] arr = new AudioPlayer[] {dyingNoise, shortHopNoise, flyingNoise, yoshiNoise, maxPowerNoise};
-    for (AudioPlayer ap : arr) {
-      ap.pause();
-      ap.rewind();
-    }  
-  }
   
   void move() {
     // move right
