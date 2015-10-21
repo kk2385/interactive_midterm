@@ -94,8 +94,7 @@ void gamePlaying() {
 
 //intereactions with death screen
 void deathScreen() {
-  death = loadImage("data/gameover.png");
-  background(death);
+  background(0);
   if (squid.livesRemaining > 0) { //there are still lives
     text("You are dead!", 20, 20);
     text("Lives remaining: " + squid.livesRemaining, 20, 40);
@@ -104,6 +103,8 @@ void deathScreen() {
       exitDeathScreen();
     }
   } else { //no more lives.
+    death = loadImage("data/gameover.png");
+    background(death);
     text("Game Over!", 20, 20);
     text("Press space to start a new game.", 20, 40);
     if (keyPressed && key==' ') {
