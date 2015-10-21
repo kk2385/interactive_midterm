@@ -30,6 +30,7 @@ class Player
   // jump related
   float jumpPower = 0;
   float charge = 0; 
+  float countdown = 1; // for shortHopSound
   //frame count for flutter (dont wanna flutter forever)
   int remainingFlutterFrames = 0;  
   boolean fluttering = false;
@@ -41,6 +42,7 @@ class Player
   int currLevel = 1;
   int totalScore = 0;
   int highestGroundThisStage = 0;
+
 
   Player(float _x, float _y) {
     // store position
@@ -73,6 +75,14 @@ class Player
     }
   }  
 
+  void resetSound() {
+    AudioPlayer[] arr = new AudioPlayer[] {dyingNoise, shortHopNoise, flyingNoise, yoshiNoise, maxPowerNoise};
+    for (AudioPlayer ap : arr) {
+      ap.pause();
+      ap.rewind();
+    }  
+  }
+  
   void move() {
     // move right
     boolean inAir = jumpPower != 0;
@@ -100,8 +110,9 @@ class Player
     //flutter
     if (inAir && keyW && !alreadyFluttered) {
       fluttering = true;
-      flyingNoise.pause();
-      flyingNoise.rewind();
+//      flyingNoise.pause();
+//      flyingNoise.rewind();
+      resetSound  ();
       flyingNoise.play();
       alreadyFluttered = true;
       remainingFlutterFrames = 40;
@@ -129,12 +140,10 @@ class Player
     if (!keyS && jumpPower == 0) {
       jumpPower = charge;
       charge = 0.;
-      shortHopNoise.pause();
-      shortHopNoise.rewind();
-      shortHopNoise.play();
 
     }
 
+    
     // apply jump power (if we are actively jumping this will push us up into the sky)
     y -= jumpPower;
 
@@ -154,6 +163,7 @@ class Player
       alreadyFluttered = false;
       jumpPower = 0;
       fill(255);
+      countdown = 1; // Yoshi can make shortHopSound
       if (DEBUG) text("Tile below is SOLID. jumpPower=" + jumpPower, 20, 20);
     } else {
       jumpPower -= 0.2;
@@ -161,6 +171,17 @@ class Player
       fill(255);
       if (DEBUG) text("Tile below is NOT SOLID. jumpPower=" + jumpPower, 20, 20);
     }
+    
+        
+    if (!keyS && jumpPower>0 && countdown == 1) {
+      countdown = 0;
+      System.out.println("Short Hop here" + x);
+      //shortHopNoise.pause();
+      //shortHopNoise.rewind();
+      resetSound();
+      shortHopNoise.play();  
+    }
+    //if (isSolid(downTileCode)) countdown = 1;    
   }
 
   
