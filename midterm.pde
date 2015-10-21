@@ -31,6 +31,8 @@ Player squid; // in our version it's a yoshi, though
 
 boolean deathScreen; //death screen toggle
 Lava lava;
+int[][] enemyLocations;
+ArrayList<Enemy> enemies = new ArrayList<Enemy> ();
 
 void setup() {
   size(500, 500);
@@ -42,6 +44,16 @@ void setup() {
   highScore = 0;
   deathScreen = false;
 //<<<<<<< HEAD
+  enemyLocations = sg.getEnemySpawnLocations();
+  
+//  println(enemyLocations.length);
+//  for(int a = 0; a < 40; a++){
+//    for(int b = 0; b < 20; b++){
+//      print(enemyLocations[a][b] + " ");
+//    }
+//    println("");
+//  }
+
   minim = new Minim(this);
   yoshiNoise = minim.loadFile("sounds/Yoshi.mp3");
   dyingNoise = minim.loadFile("sounds/Dying.mp3");
@@ -62,6 +74,16 @@ void draw() {
   }
 }
 
+void enemyDisplay(){
+  for(int a = 0; a < 40; a++){
+    for(int b = 0; b < 20; b++){
+//      print(enemyLocations[a][b] + " ");
+//        if(enemyLocations[a][b]
+    }
+//    println("");
+  }
+}
+
 //interactions during game play
 void gamePlaying() {
   drawLevel();
@@ -70,6 +92,7 @@ void gamePlaying() {
   lava.display();
   squid.move();
   squid.display();
+  
   if (squid.isBelowMap() || squid.isTouchingLava(lava)) {
     goToDeathScreen();
     dyingNoise.pause();
