@@ -44,7 +44,6 @@ void setup() {
   resetCameraAngle();
   highScore = 0;
   deathScreen = false;
-//<<<<<<< HEAD
   minim = new Minim(this);
   yoshiNoise = minim.loadFile("sounds/Yoshi.mp3");
   dyingNoise = minim.loadFile("sounds/Dying.mp3");
@@ -52,9 +51,7 @@ void setup() {
   shortHopNoise = minim.loadFile("sounds/Short Hop.mp3");
   maxPowerNoise = minim.loadFile("sounds/Max Power.mp3");
     
-//=======
   lava = new Lava();
-//>>>>>>> 3de2a6a98446439d20f001cd9353f8cedd3d2b36
 }
 
 void draw() {
@@ -94,7 +91,8 @@ void gamePlaying() {
 
 //intereactions with death screen
 void deathScreen() {
-  background(0);
+  death = loadImage("data/gameover.png");
+  background(death);
   if (squid.livesRemaining > 0) { //there are still lives
     text("You are dead!", 20, 20);
     text("Lives remaining: " + squid.livesRemaining, 20, 40);
@@ -103,8 +101,6 @@ void deathScreen() {
       exitDeathScreen();
     }
   } else { //no more lives.
-    death = loadImage("data/gameover.png");
-    background(death);
     text("Game Over!", 20, 20);
     text("Press space to start a new game.", 20, 40);
     if (keyPressed && key==' ') {
