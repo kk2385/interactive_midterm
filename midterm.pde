@@ -72,16 +72,12 @@ void gamePlaying() {
   squid.display();
   if (squid.isBelowMap() || squid.isTouchingLava(lava)) {
     goToDeathScreen();
-    dyingNoise.pause();
-    dyingNoise.rewind();
-    dyingNoise.play();
+    playSound(dyingNoise);
     squid.die();
     resetStage();
   }
   if (squid.isTouchingCoin()) {
-    yoshiNoise.pause();
-    yoshiNoise.rewind();
-    yoshiNoise.play();
+    playSound(yoshiNoise);
     toNextStage();
   }
   squid.updateScore();
@@ -207,6 +203,20 @@ boolean isCoin(int tileCode) {
   return tileCode == 2;
 }
 
+void playSound(AudioPlayer ap) {
+  ap.pause();
+  ap.rewind();
+  ap.play();
+}
+
+void resetSound() {
+  AudioPlayer[] arr = new AudioPlayer[] {dyingNoise, shortHopNoise, flyingNoise, yoshiNoise, maxPowerNoise};
+  for (AudioPlayer ap : arr) {
+    ap.pause();
+    ap.rewind();
+  }  
+}
+  
 // handle multiple key presses
 void keyPressed() {
   if (key == 'a') { keyA = true; }  
