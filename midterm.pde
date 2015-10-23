@@ -31,8 +31,8 @@ Player squid; // in our version it's a yoshi, though
 
 boolean deathScreen; //death screen toggle
 Lava lava;
-int[][] enemyLocations;
-ArrayList<Enemy> enemies = new ArrayList<Enemy> ();
+
+Enemy booA;
 
 void setup() {
   size(500, 500);
@@ -43,16 +43,8 @@ void setup() {
   resetCameraAngle();
   highScore = 0;
   deathScreen = false;
-//<<<<<<< HEAD
-  enemyLocations = sg.getEnemySpawnLocations();
-  
-//  println(enemyLocations.length);
-//  for(int a = 0; a < 40; a++){
-//    for(int b = 0; b < 20; b++){
-//      print(enemyLocations[a][b] + " ");
-//    }
-//    println("");
-//  }
+//<<<<<<< HEAD  
+  booA = new Enemy();
 
   minim = new Minim(this);
   yoshiNoise = minim.loadFile("sounds/Yoshi.mp3");
@@ -74,33 +66,32 @@ void draw() {
   }
 }
 
-void enemyDisplay(){
-  for(int a = 0; a < 40; a++){
-    for(int b = 0; b < 20; b++){
-//      print(enemyLocations[a][b] + " ");
-//        if(enemyLocations[a][b]
-    }
-//    println("");
-  }
-}
-
 //interactions during game play
 void gamePlaying() {
   drawLevel();
   adjustCameraView();
+  booA.display();
   lava.move();
   lava.display();
   squid.move();
   squid.display();
+
+  //if boo touches the lava, boo respawns somewhere else
+  if(booA.isTouchingLava(lava)){
+    booA.respawn();
+  }
   
-  if (squid.isBelowMap() || squid.isTouchingLava(lava)) {
+  if (squid.isBelowMap() || squid.isTouchingLava(lava) || squid.isTouchingBoo(booA)) {
     goToDeathScreen();
     dyingNoise.pause();
     dyingNoise.rewind();
     dyingNoise.play();
     squid.die();
+    booA.respawn();
     resetStage();
   }
+  
+  
   if (squid.isTouchingCoin()) {
     yoshiNoise.pause();
     yoshiNoise.rewind();
@@ -143,7 +134,6 @@ void resetStage() {
   resetCameraAngle();
 }
 
-
 //text representation of score
 void displayScore() {
   fill(255);
@@ -157,6 +147,7 @@ void displayScore() {
 void newGame() {
   resetStage();
   squid = new Player(0, 300);
+  booA = new Enemy();
   resetCameraAngle();
   displayScore();
 }
@@ -164,7 +155,7 @@ void newGame() {
 
 //resets the camera to the bottom of the level
 void resetCameraAngle() {
-  offset = (-CELL_SIZE*level.length) + CELL_SIZE*(width/CELL_SIZE);  
+  offset = (-CELL_SIZE*level.length) + width; 
 }
 
 
@@ -173,6 +164,7 @@ void toNextStage() {
   resetStage();
   squid.respawn();
   squid.currLevel++;
+  booA.respawn();
 }
 
 
@@ -187,6 +179,7 @@ void adjustCameraView() {
   if (offset < 0 && squid.y <= width/3) { //move camera up if yoshi is in the top 1/3 of screen.
     offset+=2;
     squid.y+=2; //move our character up too, since the world is technically "shifting".
+    booA.y+=2;
   }
   if (offset >= 0) offset = 0;
 }

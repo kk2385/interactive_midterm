@@ -100,8 +100,8 @@ class Player
     if (inAir && keyW && !alreadyFluttered) {
       fluttering = true;
 //      flyingNoise.pause();
-//      flyingNoise.rewind();
-      resetSound  ();
+      flyingNoise.rewind();
+//      resetSound  ();
       flyingNoise.play();
       alreadyFluttered = true;
       remainingFlutterFrames = 40;
@@ -165,9 +165,9 @@ class Player
     if (!keyS && jumpPower>0 && countdown == 1) {
       countdown = 0;
       System.out.println("Short Hop here" + x);
-      //shortHopNoise.pause();
-      //shortHopNoise.rewind();
-      resetSound();
+//      shortHopNoise.pause();
+      shortHopNoise.rewind();
+//      resetSound();
       shortHopNoise.play();  
     }
     //if (isSolid(downTileCode)) countdown = 1;    
@@ -233,6 +233,12 @@ class Player
   
   boolean isTouchingLava(Lava lava) {
     return getActualHeight()-PLAYER_SIZE < lava.lavaHeight;
+  }
+  
+  boolean isTouchingBoo(Enemy boo){
+    float distance = dist(boo.x, boo.y, x, y);
+    println(distance+"xxx");
+    return distance < 30;
   }
   
   //height respect to the bottom of the level.
