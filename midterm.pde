@@ -34,6 +34,8 @@ Lava lava;
 
 Enemy booA;
 
+PImage gameOverScreen;
+PImage loadScreen;
 void setup() {
   size(500, 500);
   loadTiles();
@@ -52,7 +54,8 @@ void setup() {
   flyingNoise = minim.loadFile("sounds/Flying.mp3");
   shortHopNoise = minim.loadFile("sounds/Short Hop.mp3");
   maxPowerNoise = minim.loadFile("sounds/Max Power.mp3");
-    
+  
+  gameOverScreen = loadImage("data/gameover.png");
 //=======
   lava = new Lava();
 //>>>>>>> 3de2a6a98446439d20f001cd9353f8cedd3d2b36
@@ -75,6 +78,7 @@ void gamePlaying() {
   lava.display();
   squid.move();
   squid.display();
+  sg.curtainRaise();
 
   //if boo touches the lava, boo respawns somewhere else
   if(booA.isTouchingLava(lava)){
@@ -93,6 +97,7 @@ void gamePlaying() {
   
   
   if (squid.isTouchingCoin()) {
+    flyingNoise.pause();
     yoshiNoise.pause();
     yoshiNoise.rewind();
     yoshiNoise.play();
@@ -114,13 +119,19 @@ void deathScreen() {
       exitDeathScreen();
     }
   } else { //no more lives.
-    text("Game Over!", 20, 20);
-    text("Press space to start a new game.", 20, 40);
+    background(gameOverScreen);
+    //text("Game Over!", 20, 20);
+    text("Press space to start a new game.", 20, 20);
     if (keyPressed && key==' ') {
       exitDeathScreen();
       newGame();
     }
   }  
+}
+
+void screenIn(PImage p) {
+  image(p, 0, 0);
+  
 }
 
 //death screen toggles

@@ -2,6 +2,8 @@ class StageGenerator {
   
   int[][] stage;
   int size;
+  PImage curtain = loadImage("data/screen.gif");
+  int curtainY = 0;
   
   StageGenerator(int _size) {
     size = _size;
@@ -9,12 +11,19 @@ class StageGenerator {
   }
   
   int[][] generate() {
+    curtainY = 0;
     setAllToAir();
     fillInPlatforms();
     setBottomRowToAllSolid();
     setTopThreeRowsToAllAir();
     setRandomCoinOnTop();
     return stage;
+  }
+  
+  void curtainRaise() {
+    image(curtain, 0, curtainY);
+    curtainY -= 20;
+    if (curtainY < -1000) curtainY = -1000;
   }
   
   void fillInPlatforms() {

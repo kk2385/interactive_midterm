@@ -148,6 +148,7 @@ class Player
 
     boolean canLand = jumpPower <= 0;
     if (isSolid(downTileCode) && !isSolid(currTileCode) && canLand) { //land on a tile.
+      flyingNoise.pause();
       fluttering = false;
       alreadyFluttered = false;
       jumpPower = 0;
